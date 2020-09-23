@@ -1,7 +1,6 @@
 from sanic import Sanic, response
 from sanic.response import json
 import asyncpg
-import json
 import datetime
 
 app = Sanic("hello_example")
