@@ -9,7 +9,7 @@ import db
 app = Sanic("app")
 
 
-@app.post("/")
+@app.post("/person")
 async def create_person(request):
     async with db.pool.acquire() as conn:
         sql = '''
@@ -17,7 +17,7 @@ async def create_person(request):
                         name, guid, dt)
                         VALUES ($1, $2, $3);
                 '''
-        rows = await conn.execute(sql)
+        rows = await conn.execute(sql, request.json["name"], request.json["guid"], datetime.datetime.fromisoformat(request.json["dt"]))
         return response.json({}, status=201)
 
 
