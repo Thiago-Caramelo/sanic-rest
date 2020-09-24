@@ -2,6 +2,8 @@ from sanic import Sanic, response
 from sanic.response import json
 import asyncpg
 import datetime
+from uuid import UUID
+import json_utils
 
 app = Sanic("hello_example")
 
@@ -15,26 +17,7 @@ async def person(request):
                     FROM public.person; 
                 '''
         rows = await conn.fetch(sql)
-        items = list(map(lambda x: dict(x), rows))
-        return response.json(items, status=200)
-
-
-async def setCodes(conn):
-    def decode_timestamp(wkb: str):
-        return wkb.replace(" ", "T")
-
-    await conn.set_type_codec(
-        'timestamp',
-        encoder=datetime.datetime,
-        decoder=decode_timestamp,
-        schema='pg_catalog'
-    )
-    await conn.set_type_codec(
-        'uuid',
-        encoder=str,
-        decoder=str,
-        schema='pg_catalog'
-    )
+        return response.json(json_utils.converter(rows), status=200)
 
 
 @app.listener('before_server_start')
@@ -55,8 +38,7 @@ async def register_db(app, loop):
         max_queries=50000,
         # maximum idle times
         max_inactive_connection_lifetime=300,
-        loop=loop,
-        init=setCodes)
+        loop=loop)
     app.config['pool'] = poll
 
 
