@@ -21,12 +21,23 @@ async def create_person(request):
         return response.json({}, status=201)
 
 
+@app.route("/wait")
+async def wait(request):
+    async with db.pool.acquire() as conn:
+        sql = '''
+                    SELECT pg_sleep(1); 
+                '''
+        rows = await conn.fetchrow(sql)
+        return response.json(json_utils.converter(rows), status=200)
+
+
 @app.route("/person")
 async def person(request):
     async with db.pool.acquire() as conn:
         sql = '''
-                    SELECT id, name, guid, dt
-                    FROM public.person; 
+                    SELECT * FROM public.person
+                    ORDER BY id desc
+                    LIMIT 10;
                 '''
         rows = await conn.fetch(sql)
         return response.json(json_utils.converter(rows), status=200)
