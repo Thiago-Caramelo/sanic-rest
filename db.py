@@ -1,6 +1,16 @@
 import asyncpg
+import ujson
 
 pool = None
+
+
+async def setupJson(conn: asyncpg.Record):
+    await conn.set_type_codec(
+        'jsonb',
+        encoder=ujson.dumps,
+        decoder=ujson.loads,
+        schema='pg_catalog'
+    )
 
 
 async def connect(loop):
@@ -21,6 +31,7 @@ async def connect(loop):
         max_queries=50000,
         # maximum idle times
         max_inactive_connection_lifetime=300,
+        init=setupJson,
         loop=loop)
 
 

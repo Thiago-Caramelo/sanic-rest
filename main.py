@@ -29,10 +29,10 @@ async def create_person(request):
     async with db.pool.acquire() as conn:
         sql = '''
                     INSERT INTO public.person(
-                        name, guid, dt)
-                        VALUES ($1, $2, $3);
+                        name, guid, dt, obj, arr)
+                        VALUES ($1, $2, $3, $4, $5);
                 '''
-        rows = await conn.execute(sql, request.json["name"], request.json["guid"], datetime.datetime.fromisoformat(request.json["dt"]))
+        rows = await conn.execute(sql, request.json["name"], request.json["guid"], datetime.datetime.fromisoformat(request.json["dt"]), request.json["obj"], request.json["arr"])
         return response.json({}, status=201)
 
 
