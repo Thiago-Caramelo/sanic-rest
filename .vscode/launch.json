@@ -9,7 +9,13 @@
       "type": "python",
       "request": "launch",
       "program": "${file}",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "env": {
+        "SANIC_DB_HOST": "localhost",
+        "SANIC_DB_USER": "postgres",
+        "SANIC_DB_PASSWORD": "example",
+        "SANIC_DB_DATABASE": "sanic"
+      }
     }
   ]
 }

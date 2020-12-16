@@ -1,5 +1,6 @@
 import asyncpg
 import ujson
+import main
 
 pool = None
 
@@ -17,8 +18,8 @@ async def connect(loop):
     # Create a database connection pool
     print("Connecting to Postgres")
     conn = "postgres://{user}:{password}@{host}:{port}/{database}".format(
-        user='postgres', password='example', host='localhost',
-        port=5432, database='sanic'
+        user=main.app.config.DB_USER, password=main.app.config.DB_PASSWORD, host=main.app.config.DB_HOST,
+        port=5432, database=main.app.config.DB_DATABASE
     )
     global pool
     pool = await asyncpg.create_pool(
